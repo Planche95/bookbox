@@ -27,9 +27,9 @@ namespace BookBox.Controllers
             else
             {
                 books = _bookRepository.Books
-                    .Where(b => isContainCaseInsensitive(b.Title, filter) ||
-                                isContainCaseInsensitive(b.Author.Name, filter) ||
-                                isContainCaseInsensitive(b.Author.LastName, filter) ||
+                    .Where(b => IsContainCaseInsensitive(b.Title, filter) ||
+                                IsContainCaseInsensitive(b.Author.Name, filter) ||
+                                IsContainCaseInsensitive(b.Author.LastName, filter) ||
                                 b.ISBN.Contains(filter));
             }
 
@@ -37,7 +37,7 @@ namespace BookBox.Controllers
         }
 
         //Simple Contains is case sensitive - Possible another solution: COLLATE on column in database
-        bool isContainCaseInsensitive(string baseString, string filter)
+        bool IsContainCaseInsensitive(string baseString, string filter)
         {
             return baseString.IndexOf(filter, StringComparison.CurrentCultureIgnoreCase) != -1;
         }
