@@ -1,0 +1,16 @@
+﻿@model IEnumerable<BookBox.Models.Book>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<div class="row">
+
+    @foreach (var book in Model)
+    {
+        @Html.Partial("BookBlock", book)
+    }
+
+</div>

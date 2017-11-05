@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -18,7 +19,8 @@ namespace BookBox.Models
         {
             get
             {
-                return _appDbContext.Books;
+                return _appDbContext.Books
+                    .Include(b => b.Author);
             }
         }
 
@@ -30,7 +32,9 @@ namespace BookBox.Models
 
         public Book GetBookById(int bookId)
         {
-            return _appDbContext.Books.FirstOrDefault(b => b.BookId == bookId);
+            return _appDbContext.Books
+                .Include(b => b.Author)
+                .FirstOrDefault(b => b.BookId == bookId);
         }
     }
 }
