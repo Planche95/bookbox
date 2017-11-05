@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27004.2005
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bookbox", "bookbox\bookbox.csproj", "{5214E6B2-EC6E-4EE7-AA7E-41970D1279C1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookBox", "bookbox\BookBox.csproj", "{5214E6B2-EC6E-4EE7-AA7E-41970D1279C1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
