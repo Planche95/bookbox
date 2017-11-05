@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2005
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bookbox", "bookbox\bookbox.csproj", "{5214E6B2-EC6E-4EE7-AA7E-41970D1279C1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5214E6B2-EC6E-4EE7-AA7E-41970D1279C1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5214E6B2-EC6E-4EE7-AA7E-41970D1279C1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5214E6B2-EC6E-4EE7-AA7E-41970D1279C1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5214E6B2-EC6E-4EE7-AA7E-41970D1279C1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {344DFAF7-E4C8-496E-ABD7-678FC8DBA745}
+	EndGlobalSection
+EndGlobal
