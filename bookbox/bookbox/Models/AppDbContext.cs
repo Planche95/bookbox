@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace bookbox.Models
+namespace BookBox.Models
 {
     public class AppDbContext : IdentityDbContext<IdentityUser>
     {
