@@ -1,8 +1,4 @@
-﻿@using Microsoft.AspNetCore.Identity
-
-@inject SignInManager<IdentityUser> SignInManager
-
-@if (SignInManager.IsSignedIn(User))
+﻿@if (SignInManager.IsSignedIn(User))
 {
     <form asp-controller="Account" asp-action="Logout" id="logoutForm" method="post" class="navbar-right">
         <ul class="nav navbar-nav navbar-right">

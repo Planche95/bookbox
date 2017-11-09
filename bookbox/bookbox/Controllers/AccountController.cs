@@ -59,7 +59,7 @@ namespace BookBox.Controllers
         }
 
         [HttpPost]
-        [ValidateAntiForgeryToken]
+        [AllowAnonymous]
         public async Task<IActionResult> Register(LoginViewModel loginViewModel)
         {
             if (ModelState.IsValid)

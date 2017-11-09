@@ -1,0 +1,11 @@
+﻿@if (SignInManager.IsSignedIn(User))
+{
+    if (User.IsInRole("Admin"))
+    {
+        <li><a asp-controller="" asp-action="">Add new</a></li>
+    }
+    if (User.IsInRole("User"))
+    {
+        <li><a asp-controller="" asp-action="">@User.Identity.Name</a></li>
+    }
+}
