@@ -4,56 +4,24 @@
     ViewData["Title"] = "Details";
 }
 
-<h2>Details</h2>
+<h2></h2>
 
-<div>
-    <h4>Book</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ReleaseDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ReleaseDate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.ISBN)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.ISBN)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.AveragedRating)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.AveragedRating)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.PicturePath)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.PicturePath)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Description)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Description)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Author)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Author.AuthorId)
-        </dd>
-    </dl>
+<div class="thumbnail">
+    <img alt="" src="@Model.PicturePath">
+    <div class="caption-full">
+        @*<h3 class="pull-right">@Model.Author.Name @Model.Author.LastName</h3>*@
+        <h4 class="pull-right">Release Date: @Model.ReleaseDate.ToShortDateString()</h4>
+        <h3>@Model.Title</h3>
+        <h4>
+            <a asp-controller="Book" asp-action="Index"
+               asp-route-filter="@Model.Author.LastName">@Model.Author.Name @Model.Author.LastName</a>
+        </h4>
+        <p>@Model.Description</p>
+        <h5 class="pull-right">ISBN @Model.ISBN</h5>
+        @Model.AveragedRating
+    </div>
 </div>
+
 <div>
     <a asp-action="Edit" asp-route-id="@Model.BookId">Edit</a> |
     <a asp-action="Index">Back to List</a>

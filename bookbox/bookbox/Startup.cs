@@ -58,6 +58,7 @@ namespace BookBox
             }
 
             app.UseStaticFiles();
+            app.UseAuthentication();
 
             app.UseMvc(routes =>
             {

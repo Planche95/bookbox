@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Identity;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,8 +8,22 @@ namespace BookBox.Models
 {
     public class DbInitializer
     {
-        public static void Seed(AppDbContext context)
+        public static async Task SeedAsync(AppDbContext context, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
         {
+            if (!roleManager.Roles.Any())
+            {
+                await roleManager.CreateAsync(new IdentityRole("User"));
+                //Admin have to be done before creating new user!
+                roleManager.CreateAsync(new IdentityRole("Admin")).GetAwaiter().GetResult();
+            }
+
+            if (!userManager.Users.Any())
+            {
+                IdentityUser admin = new IdentityUser() { UserName = "Admin" };
+                await userManager.CreateAsync(admin, "Admin");
+                await userManager.AddToRoleAsync(admin, "Admin");
+            }
+
             if (!context.Authors.Any())
             {
                 context.Authors.AddRange(Authors.Select(c => c.Value));
@@ -40,7 +55,7 @@ namespace BookBox.Models
             {
                 if (authors == null)
                 {
-                    var genresList = new Author[]
+                    var authorsList = new Author[]
                     {
                         new Author { Name = "Joanne Kathleen", LastName = "Rowling" },
                         new Author { Name = "Neil Richard", LastName = "Gaiman" },
@@ -49,9 +64,9 @@ namespace BookBox.Models
 
                     authors = new Dictionary<string, Author>();
 
-                    foreach (Author genre in genresList)
+                    foreach (Author author in authorsList)
                     {
-                        authors.Add(genre.Name + " " + genre.LastName, genre);
+                        authors.Add(author.Name + " " + author.LastName, author);
                     }
                 }
 

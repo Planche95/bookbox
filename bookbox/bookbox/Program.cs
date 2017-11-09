@@ -16,22 +16,8 @@ namespace BookBox
     {
         public static void Main(string[] args)
         {
-            var host = BuildWebHost(args);
-
-            using (var scope = host.Services.CreateScope())
-            {
-                var services = scope.ServiceProvider;
-                try
-                {
-                    AppDbContext context = services.GetRequiredService<AppDbContext>();
-                    DbInitializer.Seed(context);
-                }
-                catch (Exception ex)
-                {
-                    var logger = services.GetRequiredService<ILogger<Program>>();
-                    logger.LogError(ex, "An error occurred while migrating the database.");
-                }
-            }
+            var host = BuildWebHost(args)
+                .Seed();
 
             host.Run();
         }
@@ -40,5 +26,6 @@ namespace BookBox
             WebHost.CreateDefaultBuilder(args)
                 .UseStartup<Startup>()
                 .Build();
+
     }
 }
