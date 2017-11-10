@@ -22,10 +22,12 @@ namespace BookBox.Models
             }
         }
 
-        public void CreateAuthor(Author author)
+        public int CreateAuthor(Author author)
         {
             _appDbContext.Authors.Add(author);
             _appDbContext.SaveChanges();
+
+            return author.AuthorId;
         }
 
         public Author GetAuthorById(int authorId)

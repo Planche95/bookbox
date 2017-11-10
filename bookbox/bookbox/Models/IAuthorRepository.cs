@@ -10,6 +10,6 @@ namespace BookBox.Models
         IEnumerable<Author> Authors { get; }
 
         Author GetAuthorById(int authorId);
-        void CreateAuthor(Author author);
+        int CreateAuthor(Author author);
     }
 }

@@ -4,16 +4,21 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BookBox.Models;
+using Microsoft.AspNetCore.Authorization;
+using BookBox.ViewModels;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BookBox.Controllers
 {
     public class BookController : Controller
     {
         private readonly IBookRepository _bookRepository;
+        private readonly IAuthorRepository _authorRepository;
 
-        public BookController(IBookRepository bookRepository)
+        public BookController(IBookRepository bookRepository, IAuthorRepository authorRepository)
         {
             _bookRepository = bookRepository;
+            _authorRepository = authorRepository;
         }
 
         public IActionResult Index(string filter)
@@ -45,6 +50,45 @@ namespace BookBox.Controllers
         public IActionResult Details(int id)
         {
             return View(_bookRepository.GetBookById(id));
+        }
+
+        [Authorize(Roles = "Admin")]
+        public IActionResult Create()
+        {
+            List<SelectListItem> authors = new List<SelectListItem>();
+            foreach (Author author in _authorRepository.Authors)
+            {
+                authors.Add(new SelectListItem()
+                {
+                    Text = author.Name + " " + author.LastName,
+                    Value = author.AuthorId.ToString()
+                });
+            }
+
+            return View(new BookCreateViewModel()
+            {
+                Authors = authors
+            });
+        }
+
+        [HttpPost]
+        [Authorize(Roles = "Admin")]
+        public IActionResult Create(BookCreateViewModel model)
+        {
+            int bookId = _bookRepository.CreateBook(
+                new Book()
+                {
+                    Title = model.Title,
+                    Description = model.Description,
+                    ISBN = model.ISBN,
+                    PicturePath = model.PicturePath,
+                    ReleaseDate = model.ReleaseDate,
+                    AuthorId = model.AuthorId,
+                    AveragedRating = 0
+                }
+            );
+
+            return RedirectToAction("Details", new { id = bookId });
         }
     }
 }

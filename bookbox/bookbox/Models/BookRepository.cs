@@ -24,10 +24,12 @@ namespace BookBox.Models
             }
         }
 
-        public void CreateBook(Book book)
+        public int CreateBook(Book book)
         {
             _appDbContext.Books.Add(book);
             _appDbContext.SaveChanges();
+
+            return book.BookId;
         }
 
         public Book GetBookById(int bookId)

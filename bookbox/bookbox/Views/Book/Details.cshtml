@@ -13,8 +13,8 @@
         <h4 class="pull-right">Release Date: @Model.ReleaseDate.ToShortDateString()</h4>
         <h3>@Model.Title</h3>
         <h4>
-            <a asp-controller="Book" asp-action="Index"
-               asp-route-filter="@Model.Author.LastName">@Model.Author.Name @Model.Author.LastName</a>
+            <a asp-controller="Author" asp-action="Details"
+               asp-route-id="@Model.Author.AuthorId">@Model.Author.Name @Model.Author.LastName</a>
         </h4>
         <p>@Model.Description</p>
         <h5 class="pull-right">ISBN @Model.ISBN</h5>
