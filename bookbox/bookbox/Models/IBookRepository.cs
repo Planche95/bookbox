@@ -11,5 +11,8 @@ namespace BookBox.Models
 
         Book GetBookById(int bookId);
         int CreateBook(Book book);
+        void EditBook(Book book);
+        void DeleteBook(int id);
+
     }
 }

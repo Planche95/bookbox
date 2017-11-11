@@ -1,11 +1,9 @@
 ﻿@model BookCreateViewModel
-
 @{
     ViewData["Title"] = "Create";
 }
 
-<h2>Create</h2>
-
+<h2>@getPageName()</h2>
 <h4>Book</h4>
 <hr />
 <div class="row">
@@ -39,18 +37,32 @@
             </div>
             <div class="form-group">
                 <label asp-for="AuthorId" class="control-label"></label>
-                <select asp-for="AuthorId" class ="form-control" asp-items="@Model.Authors"></select>
+                <select asp-for="AuthorId" class="form-control" asp-items="@Model.Authors"></select>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" />
+                <input type="hidden" asp-for="BookId" />
+                <input asp-action="CreateEdit" type="submit" value="@getPageName()" class="btn btn-default" />
             </div>
         </form>
     </div>
 </div>
-
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+
+@functions{
+    public string getPageName()
+    {
+        if (Model.BookId == 0)
+        {
+            return "Create";
+        }
+        else
+        {
+            return "Edit";
+        }
+    }
+}
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}

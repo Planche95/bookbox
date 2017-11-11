@@ -32,6 +32,27 @@ namespace BookBox.Models
             return book.BookId;
         }
 
+        public void EditBook(Book book)
+        {
+            Book editedBook = _appDbContext.Books.First(b => b.BookId == book.BookId);
+
+            editedBook.PicturePath = book.PicturePath;
+            editedBook.Description = book.Description;
+            editedBook.ISBN = book.ISBN;
+            editedBook.ReleaseDate = book.ReleaseDate;
+            editedBook.Title = book.Title;
+            editedBook.AuthorId = book.AuthorId;
+
+            _appDbContext.SaveChanges();
+        }
+
+        public void DeleteBook(int id)
+        {
+            Book book =_appDbContext.Books.First(b => b.BookId == id);
+            _appDbContext.Books.Remove(book);
+            _appDbContext.SaveChanges();
+        }
+
         public Book GetBookById(int bookId)
         {
             return _appDbContext.Books

@@ -9,7 +9,6 @@
 <div class="thumbnail">
     <img alt="" src="@Model.PicturePath">
     <div class="caption-full">
-        @*<h3 class="pull-right">@Model.Author.Name @Model.Author.LastName</h3>*@
         <h4 class="pull-right">Release Date: @Model.ReleaseDate.ToShortDateString()</h4>
         <h3>@Model.Title</h3>
         <h4>
@@ -23,6 +22,6 @@
 </div>
 
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.BookId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    @await Html.PartialAsync("AdminBookButtons")
 </div>
+

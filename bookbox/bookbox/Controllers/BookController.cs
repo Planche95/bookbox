@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace BookBox.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class BookController : Controller
     {
         private readonly IBookRepository _bookRepository;
@@ -21,6 +22,7 @@ namespace BookBox.Controllers
             _authorRepository = authorRepository;
         }
 
+        [AllowAnonymous]
         public IActionResult Index(string filter)
         {
             IEnumerable<Book> books = _bookRepository.Books;
@@ -47,15 +49,16 @@ namespace BookBox.Controllers
             return baseString.IndexOf(filter, StringComparison.CurrentCultureIgnoreCase) != -1;
         }
 
+        [AllowAnonymous]
         public IActionResult Details(int id)
         {
             return View(_bookRepository.GetBookById(id));
         }
 
-        [Authorize(Roles = "Admin")]
-        public IActionResult Create()
+        private List<SelectListItem> GetAuthorsSelectList()
         {
             List<SelectListItem> authors = new List<SelectListItem>();
+
             foreach (Author author in _authorRepository.Authors)
             {
                 authors.Add(new SelectListItem()
@@ -65,17 +68,27 @@ namespace BookBox.Controllers
                 });
             }
 
-            return View(new BookCreateViewModel()
-            {
-                Authors = authors
-            });
+            return authors;
+
+        }
+
+        public IActionResult Create()
+        {
+            return View("CreateEdit",
+                new BookCreateViewModel()
+                {
+                    Authors = GetAuthorsSelectList()
+                });
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public IActionResult Create(BookCreateViewModel model)
+        public IActionResult CreateEdit(BookCreateViewModel model)
         {
-            int bookId = _bookRepository.CreateBook(
+            int bookId;
+
+            if (model.BookId == 0)
+            {
+                bookId = _bookRepository.CreateBook(
                 new Book()
                 {
                     Title = model.Title,
@@ -85,10 +98,58 @@ namespace BookBox.Controllers
                     ReleaseDate = model.ReleaseDate,
                     AuthorId = model.AuthorId,
                     AveragedRating = 0
-                }
-            );
+                });
+            }
+            else
+            {
+                bookId = model.BookId;
+                _bookRepository.EditBook(
+                new Book()
+                {
+                    BookId = model.BookId,
+                    Title = model.Title,
+                    Description = model.Description,
+                    ISBN = model.ISBN,
+                    PicturePath = model.PicturePath,
+                    ReleaseDate = model.ReleaseDate,
+                    AuthorId = model.AuthorId,
+                    AveragedRating = model.AveragedRating
+                });
+            }
 
             return RedirectToAction("Details", new { id = bookId });
+        }
+
+        public IActionResult Edit(int id)
+        {
+            Book book = _bookRepository.GetBookById(id);
+
+            return View("CreateEdit",
+                new BookCreateViewModel()
+                {
+                    BookId = book.BookId,
+                    Title = book.Title,
+                    Description = book.Description,
+                    ISBN = book.ISBN,
+                    PicturePath = book.PicturePath,
+                    ReleaseDate = book.ReleaseDate,
+                    AuthorId = book.AuthorId,
+                    AveragedRating = book.AveragedRating,
+                    Authors = GetAuthorsSelectList()
+                });
+        }
+
+        public IActionResult Delete(int id)
+        {
+            return View(_bookRepository.GetBookById(id));
+        }
+
+        [HttpPost]
+        public IActionResult Delete(Book book)
+        {
+            _bookRepository.DeleteBook(book.BookId);
+
+            return RedirectToAction("Index");
         }
     }
 }

@@ -8,6 +8,7 @@
                 <a asp-controller="Book" asp-action="Details" asp-route-id="@Model.BookId">@Model.Title</a>
             </h3>
             <p>@Model.Author.Name @Model.Author.LastName</p>
+            @await Html.PartialAsync("AdminBookButtons")
         </div>
     </div>
 </div>
