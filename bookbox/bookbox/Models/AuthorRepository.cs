@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -32,7 +33,26 @@ namespace BookBox.Models
 
         public Author GetAuthorById(int authorId)
         {
-            return _appDbContext.Authors.FirstOrDefault(a => a.AuthorId == authorId);
+            return _appDbContext.Authors
+                .Include(a => a.Books)
+                .FirstOrDefault(a => a.AuthorId == authorId);
+        }
+
+        public void EditAuthor(Author author)
+        {
+            Author editedAuthor = _appDbContext.Authors.First(a => a.AuthorId == author.AuthorId);
+
+            editedAuthor.Name = author.Name;
+            editedAuthor.LastName = author.LastName;
+
+            _appDbContext.SaveChanges();
+        }
+
+        public void DeleteAuthor(int id)
+        {
+            Author author = _appDbContext.Authors.First(a => a.AuthorId == id);
+            _appDbContext.Authors.Remove(author);
+            _appDbContext.SaveChanges();
         }
     }
 }

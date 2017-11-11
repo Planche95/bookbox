@@ -1,30 +1,20 @@
-﻿@model BookBox.Models.Author
+﻿@model Author
 
 @{
-    ViewData["Title"] = "Details";
+    ViewData["Title"] = Model.Name + " " + Model.LastName;
 }
 
-<h2>Details</h2>
+<h2>@ViewData["Title"]</h2>
 
 <div>
-    <h4>Author</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.LastName)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.LastName)
-        </dd>
-    </dl>
+    @await Html.PartialAsync("AdminAuthorButtons")
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.AuthorId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+
+<hr />
+
+<div class="row">
+    @foreach (Book book in Model.Books)
+    {
+        @Html.Partial("BookBlock", book)
+    }
 </div>

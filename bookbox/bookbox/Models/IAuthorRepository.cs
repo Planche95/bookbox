@@ -11,5 +11,7 @@ namespace BookBox.Models
 
         Author GetAuthorById(int authorId);
         int CreateAuthor(Author author);
+        void EditAuthor(Author author);
+        void DeleteAuthor(int id);
     }
 }
