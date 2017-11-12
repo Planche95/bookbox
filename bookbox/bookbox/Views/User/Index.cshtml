@@ -1,0 +1,18 @@
+﻿@model List<BookRatingViewModel>
+
+@{
+    ViewData["Title"] = User.Identity.Name;
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<hr />
+
+<div class="row">
+    @foreach (BookRatingViewModel book in Model)
+    {
+        @Html.Partial("BookBlock", book)
+    }
+</div>
+
+
