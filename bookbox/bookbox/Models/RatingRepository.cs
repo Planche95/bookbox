@@ -16,26 +16,22 @@ namespace BookBox.Models
 
         public void CreateRating(Rating rating)
         {
+            Rating newRating = new Rating()
+            {
+                BookId = rating.BookId,
+                UserId = rating.UserId,
+                Value = rating.Value
+            };
+            _appDbContext.Add(newRating);
+            _appDbContext.SaveChanges();
+        }
+
+        public void EditRating(Rating rating)
+        {
             Rating existingRating = _appDbContext.Ratings
                 .FirstOrDefault(r => r.BookId == rating.BookId && r.UserId.Equals(rating.UserId));
 
-            if(existingRating == null)
-            {
-                Rating newRating = new Rating()
-                {
-                    BookId = rating.BookId,
-                    UserId = rating.UserId,
-                    Value = rating.Value
-                };
-                _appDbContext.Add(newRating);
-            }
-            else
-            {
-                existingRating.Value = rating.Value;
-            }
-
-            //TODO Change AverageRating in Book 
-
+            existingRating.Value = rating.Value;
             _appDbContext.SaveChanges();
         }
 
@@ -47,6 +43,11 @@ namespace BookBox.Models
         public IEnumerable<Rating> GetRatingsByUserId(string userId)
         {
             return _appDbContext.Ratings.Where(r => r.UserId.Equals(userId));
+        }
+
+        public Rating GetRatingByBookIdAndUserId(int bookId, string userId)
+        {
+            return _appDbContext.Ratings.FirstOrDefault(r => r.BookId == bookId && r.UserId.Equals(userId));
         }
     }
 }

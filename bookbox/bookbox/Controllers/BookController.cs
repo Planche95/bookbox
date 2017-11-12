@@ -7,27 +7,80 @@ using BookBox.Models;
 using Microsoft.AspNetCore.Authorization;
 using BookBox.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Identity;
 
 namespace BookBox.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    
     public class BookController : Controller
     {
         private readonly IBookRepository _bookRepository;
         private readonly IAuthorRepository _authorRepository;
+        private readonly IRatingRepository _ratingRepository;
+        private readonly UserManager<IdentityUser> _userManager;
 
-        public BookController(IBookRepository bookRepository, IAuthorRepository authorRepository)
+        public BookController(IBookRepository bookRepository, IAuthorRepository authorRepository
+            , IRatingRepository ratingRepository, UserManager<IdentityUser> userManager)
         {
             _bookRepository = bookRepository;
             _authorRepository = authorRepository;
+            _ratingRepository = ratingRepository;
+            _userManager = userManager;
         }
 
-        [AllowAnonymous]
+        private bool IsLoggedAndInRole()
+        {
+            return User.Identity.IsAuthenticated && User.IsInRole("User");
+        }
+
+        private int GetRatingValue(int bookId)
+        {
+            if (IsLoggedAndInRole())
+            {
+                IdentityUser user = _userManager.GetUserAsync(HttpContext.User).Result;
+                Rating rating = _ratingRepository.GetRatingByBookIdAndUserId(bookId, user.Id);
+
+                if (rating != null)
+                {
+                    return rating.Value;
+                }
+            }
+
+            return 0;
+        }
+
+ 
+        [HttpPost]
+        [Authorize(Roles = "User")]
+        public IActionResult SaveRating(RatingJsonModel model)
+        {
+            IdentityUser user = _userManager.GetUserAsync(HttpContext.User).Result;
+            Rating rating = _ratingRepository.GetRatingByBookIdAndUserId(model.BookId, user.Id);
+
+            if (rating == null)
+            {
+                _ratingRepository.CreateRating(new Rating()
+                {
+                    BookId = model.BookId,
+                    UserId = user.Id,
+                    Value = model.Rating
+                });
+            }
+            else
+            {
+                rating.Value = model.Rating;
+                _ratingRepository.EditRating(rating);
+            }
+
+            return Json(new { });
+        }
+
         public IActionResult Index(string filter)
         {
-            IEnumerable<Book> books = _bookRepository.Books;
+            List<BookRatingViewModel> bookModels = new List<BookRatingViewModel>();
+            IEnumerable<Book> books;
 
-            if (String.IsNullOrEmpty(filter))
+            if (string.IsNullOrEmpty(filter))
             {
                 books = _bookRepository.Books;
             }
@@ -40,7 +93,16 @@ namespace BookBox.Controllers
                                 b.ISBN.Contains(filter));
             }
 
-            return View(books);
+            foreach (Book book in books)
+            {
+                bookModels.Add(new BookRatingViewModel()
+                {
+                    Book = book,
+                    Rating = GetRatingValue(book.BookId)
+                });
+            }
+
+            return View(bookModels);
         }
 
         //Simple Contains is case sensitive - Possible another solution: COLLATE on column in database
@@ -49,7 +111,6 @@ namespace BookBox.Controllers
             return baseString.IndexOf(filter, StringComparison.CurrentCultureIgnoreCase) != -1;
         }
 
-        [AllowAnonymous]
         public IActionResult Details(int id)
         {
             return View(_bookRepository.GetBookById(id));
@@ -72,6 +133,7 @@ namespace BookBox.Controllers
 
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Create()
         {
             return View("CreateEdit",
@@ -82,6 +144,7 @@ namespace BookBox.Controllers
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult CreateEdit(BookCreateViewModel model)
         {
             int bookId;
@@ -120,6 +183,7 @@ namespace BookBox.Controllers
             return RedirectToAction("Details", new { id = bookId });
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Edit(int id)
         {
             Book book = _bookRepository.GetBookById(id);
@@ -139,12 +203,14 @@ namespace BookBox.Controllers
                 });
         }
 
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(int id)
         {
             return View(_bookRepository.GetBookById(id));
         }
 
         [HttpPost]
+        [Authorize(Roles = "Admin")]
         public IActionResult Delete(Book book)
         {
             _bookRepository.DeleteBook(book.BookId);
