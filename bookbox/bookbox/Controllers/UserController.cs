@@ -16,20 +16,16 @@ namespace BookBox.Controllers
 
         private readonly IBookRepository _bookRepository;
         private readonly IRatingRepository _ratingRepository;
-        private readonly UserManager<IdentityUser> _userManager;
 
-        public UserController(IBookRepository bookRepository, IRatingRepository ratingRepository
-            , UserManager<IdentityUser> userManager)
+        public UserController(IBookRepository bookRepository, IRatingRepository ratingRepository)
         {
             _bookRepository = bookRepository;
             _ratingRepository = ratingRepository;
-            _userManager = userManager;
         }
 
         public IActionResult Index()
         {
-            IdentityUser user = _userManager.GetUserAsync(HttpContext.User).Result;
-            IEnumerable<Rating> ratings = _ratingRepository.GetRatingsByUserId(user.Id);
+            IEnumerable<Rating> ratings = _ratingRepository.GetRatingsByUserName(User.Identity.Name);
             List<BookRatingViewModel> bookModels = new List<BookRatingViewModel>();
 
             foreach (Rating rating in ratings)

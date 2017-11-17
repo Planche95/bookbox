@@ -59,6 +59,10 @@ display: inline-block;
     content: "★";
 }
 
+.thumbnail img {
+    height: 300px;
+}
+
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {
     /* Hide captions */

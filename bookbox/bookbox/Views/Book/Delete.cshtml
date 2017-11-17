@@ -30,12 +30,6 @@
             @Html.DisplayFor(model => model.ISBN)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.PicturePath)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.PicturePath)
-        </dd>
-        <dt>
             @Html.DisplayNameFor(model => model.Description)
         </dt>
         <dd>
@@ -45,14 +39,12 @@
             @Html.DisplayNameFor(model => model.Author)
         </dt>
         <dd>
-            @*@Html.DisplayFor(model => model.Author.Name + " " + model.Author.LastName)*@
             @Model.Author.Name @Model.Author.LastName
         </dd>
     </dl>
     
     <form asp-action="Delete">
         <input type="hidden" asp-for="BookId" />
-        <input type="submit" value="Delete" class="btn btn-default" /> |
-        <a asp-action="Index">Back to List</a>
+        <input type="submit" value="Delete" class="btn btn-default" />
     </form>
 </div>

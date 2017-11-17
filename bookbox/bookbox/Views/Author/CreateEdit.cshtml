@@ -1,12 +1,13 @@
-﻿@model BookBox.Models.Author
+﻿@model Author
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = getPageName();
 }
 
-<h2>@getPageName()</h2>
+<h2>@ViewData["Title"]</h2>
 <h4>Author</h4>
 <hr />
+
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
@@ -23,14 +24,10 @@
             </div>
             <div class="form-group">
                 <input type="hidden" asp-for="AuthorId" />
-                <input asp-action="CreateEdit" type="submit" value="@getPageName()" class="btn btn-default" />
+                <input asp-action="CreateEdit" type="submit" value="@ViewData["Title"]" class="btn btn-default" />
             </div>
         </form>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @functions{

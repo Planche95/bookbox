@@ -10,6 +10,7 @@ namespace BookBox.ViewModels
     {
         [Required]
         [Display(Name = "User name")]
+        [StringLength(10, MinimumLength = 3)]
         public string UserName { get; set; }
 
         [Required]

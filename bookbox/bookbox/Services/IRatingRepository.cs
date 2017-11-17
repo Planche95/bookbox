@@ -7,10 +7,10 @@ namespace BookBox.Models
 {
     public interface IRatingRepository
     {
-        IEnumerable<Rating> GetRatingsByUserId(string userId);
+        IEnumerable<Rating> GetRatingsByUserName(string userName);
         IEnumerable<Rating> GetRatingsByBookId(int bookId);
 
-        Rating GetRatingByBookIdAndUserId(int bookId, string userId);
+        Rating GetRatingByBookIdAndUserName(int bookId, string userName);
         void CreateRating(Rating rating);
         void EditRating(Rating rating);
     }

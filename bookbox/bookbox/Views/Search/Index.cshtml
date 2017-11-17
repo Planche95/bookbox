@@ -20,9 +20,9 @@
 
 <div class="row">
 
-    @foreach (var book in Model)
+    @foreach (BookRatingViewModel book in Model)
     {
-        @Html.Partial("BookBlock", book)
+        @Html.Partial("_BookBlockPartial", book)
     }
 
 </div>

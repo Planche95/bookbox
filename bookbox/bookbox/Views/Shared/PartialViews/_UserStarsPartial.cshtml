@@ -1,0 +1,15 @@
+﻿@if (SignInManager.IsSignedIn(User) && User.IsInRole("User"))
+{
+    <hr />
+    <span id="@Model.Book.BookId" class="rating">
+        @for (int i = 1; i <= 5; i++)
+        {
+            var starClass = "star";
+            if (Model.Rating == 6 - i)
+            {
+                starClass += " active";
+            }
+            <span id="myid" data-value="@(6 - i)" class="@starClass"></span>
+        }
+    </span>
+}

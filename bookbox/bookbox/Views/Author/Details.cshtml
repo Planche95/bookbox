@@ -1,20 +1,21 @@
-﻿@model Author
+﻿@model AuthorDetailsViewModel
 
 @{
-    ViewData["Title"] = Model.Name + " " + Model.LastName;
+    ViewData["Title"] = Model.Author.Name + " " + Model.Author.LastName;
 }
 
 <h2>@ViewData["Title"]</h2>
 
 <div>
-    @await Html.PartialAsync("AdminAuthorButtons")
+    @await Html.PartialAsync("_AdminButtonsPartial", new { id = Model.Author.AuthorId, controller = "Author" })
 </div>
 
 <hr />
 
 <div class="row">
-    @foreach (Book book in Model.Books)
+    @for (int i = 0; i < Model.Author.Books.Count; i++)
     {
-        @Html.Partial("BookBlock", new BookRatingViewModel() { Book = book, Rating = 0 })
+        @Html.Partial("_BookBlockPartial", 
+            new BookRatingViewModel() { Book = Model.Author.Books[i], Rating = Model.Ratings[i]})
     }
 </div>

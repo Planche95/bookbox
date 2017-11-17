@@ -13,15 +13,18 @@ namespace BookBox.Models
             if (!roleManager.Roles.Any())
             {
                 await roleManager.CreateAsync(new IdentityRole("User"));
-                //Admin have to be done before creating new user!
-                roleManager.CreateAsync(new IdentityRole("Admin")).GetAwaiter().GetResult();
+                await roleManager.CreateAsync(new IdentityRole("Admin"));
             }
 
             if (!userManager.Users.Any())
             {
                 IdentityUser admin = new IdentityUser() { UserName = "Admin" };
-                await userManager.CreateAsync(admin, "Admin");
+                await userManager.CreateAsync(admin, "Admin1234");
                 await userManager.AddToRoleAsync(admin, "Admin");
+
+                IdentityUser user = new IdentityUser() { UserName = "User" };
+                await userManager.CreateAsync(user, "User1234");
+                await userManager.AddToRoleAsync(user, "User");
             }
 
             if (!context.Authors.Any())

@@ -9,7 +9,7 @@
         };
 
     $.ajax({
-        url: '/Book/SaveRating/',
+        url: '/Rating/SaveRating/',
         type: "POST",
         dataType: "json",
         data: RatingJsonModel,

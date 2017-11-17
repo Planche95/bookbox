@@ -1,11 +1,13 @@
-﻿@model BookCreateViewModel
+﻿@model BookCreateEditViewModel
+
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = getPageName();
 }
 
-<h2>@getPageName()</h2>
+<h2>@ViewData["Title"]</h2>
 <h4>Book</h4>
 <hr />
+
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Create">
@@ -26,11 +28,6 @@
                 <span asp-validation-for="ISBN" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PicturePath" class="control-label"></label>
-                <input asp-for="PicturePath" class="form-control" />
-                <span asp-validation-for="PicturePath" class="text-danger"></span>
-            </div>
-            <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
                 <input asp-for="Description" class="form-control" />
                 <span asp-validation-for="Description" class="text-danger"></span>
@@ -41,13 +38,12 @@
             </div>
             <div class="form-group">
                 <input type="hidden" asp-for="BookId" />
-                <input asp-action="CreateEdit" type="submit" value="@getPageName()" class="btn btn-default" />
+                <input type="hidden" asp-for="PicturePath" />
+                <input type="hidden" asp-for="AveragedRating" />
+                <input asp-action="CreateEdit" type="submit" value="@ViewData["Title"]" class="btn btn-default" />
             </div>
         </form>
     </div>
-</div>
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
 @functions{

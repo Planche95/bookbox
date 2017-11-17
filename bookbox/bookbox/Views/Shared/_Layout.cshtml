@@ -29,12 +29,12 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    @await Html.PartialAsync("RoleBasedMenu")
-                    <li><a asp-controller="Book" asp-action="Index">Search</a></li>
+                    @await Html.PartialAsync("_RoleBasedMenuPartial")
+                    <li><a asp-controller="Search" asp-action="Index">Search</a></li>
                     <li><a asp-controller="Home" asp-action="About">About</a></li>
                     <li><a asp-controller="Home" asp-action="Contact">Contact</a></li>
                 </ul>
-                @await Html.PartialAsync("LoginPartial")
+                @await Html.PartialAsync("_AuthenticationMenuPartial")
             </div>
         </div>
     </nav>

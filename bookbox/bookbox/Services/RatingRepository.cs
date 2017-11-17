@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -40,14 +41,19 @@ namespace BookBox.Models
             return _appDbContext.Ratings.Where(r => r.BookId == bookId);
         }
 
-        public IEnumerable<Rating> GetRatingsByUserId(string userId)
+        public IEnumerable<Rating> GetRatingsByUserName(string userName)
         {
-            return _appDbContext.Ratings.Where(r => r.UserId.Equals(userId));
+            return _appDbContext.Ratings
+                .Include(r => r.User)
+                .Where(r => r.User.UserName.Equals(userName));
         }
 
-        public Rating GetRatingByBookIdAndUserId(int bookId, string userId)
+        public Rating GetRatingByBookIdAndUserName(int bookId, string userName)
         {
-            return _appDbContext.Ratings.FirstOrDefault(r => r.BookId == bookId && r.UserId.Equals(userId));
+            return _appDbContext.Ratings
+                .Where(r => r.BookId == bookId && r.User.UserName.Equals(userName))
+                .Include(r => r.User)
+                .FirstOrDefault();
         }
     }
 }

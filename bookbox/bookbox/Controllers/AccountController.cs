@@ -9,7 +9,6 @@ using BookBox.ViewModels;
 
 namespace BookBox.Controllers
 {
-    [Authorize]
     public class AccountController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
@@ -24,14 +23,12 @@ namespace BookBox.Controllers
             _roleManager = roleManager;
         }
 
-        [AllowAnonymous]
         public IActionResult Login()
         {
             return View(new LoginViewModel());
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Login(LoginViewModel loginViewModel)
         {
             if (!ModelState.IsValid)
@@ -52,14 +49,12 @@ namespace BookBox.Controllers
             return View(loginViewModel);
         }
 
-        [AllowAnonymous]
         public IActionResult Register()
         {
             return View();
         }
 
         [HttpPost]
-        [AllowAnonymous]
         public async Task<IActionResult> Register(LoginViewModel loginViewModel)
         {
             if (ModelState.IsValid)
@@ -76,15 +71,30 @@ namespace BookBox.Controllers
                         return RedirectToAction("Index", "Home");
                     }
                 }
+                else
+                {
+                    foreach (IdentityError error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                    
+                }
+
             }
             return View(loginViewModel);
         }
 
         [HttpPost]
+        [Authorize]
         public async Task<IActionResult> Logout()
         {
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

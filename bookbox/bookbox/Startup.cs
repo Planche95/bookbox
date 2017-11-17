@@ -28,11 +28,11 @@ namespace BookBox
                                          options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
             services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
-                options.Password.RequireDigit = false;
-                options.Password.RequiredLength = 3;
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 6;
                 options.Password.RequireNonAlphanumeric = false;
-                options.Password.RequireUppercase = false;
-                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
                 options.Password.RequiredUniqueChars = 0;
             })
                 .AddEntityFrameworkStores<AppDbContext>();
@@ -41,7 +41,11 @@ namespace BookBox
             services.AddTransient<IBookRepository, BookRepository>();
             services.AddTransient<IRatingRepository, RatingRepository>();
 
-            services.AddMvc();
+            services.AddMvc()
+                .AddRazorOptions(options =>
+                {
+                    options.ViewLocationFormats.Add("/Views/Shared/PartialViews/{0}.cshtml");
+                });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

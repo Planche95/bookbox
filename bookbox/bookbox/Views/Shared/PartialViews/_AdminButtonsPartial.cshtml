@@ -1,0 +1,6 @@
+﻿@if (SignInManager.IsSignedIn(User) && User.IsInRole("Admin"))
+{
+    <hr />
+    <a asp-controller="@ViewData.Eval("controller")" asp-action="Edit" asp-route-id="@ViewData.Eval("id")" class="btn btn-default">Edit</a>
+    <a asp-controller="@ViewData.Eval("controller")" asp-action="Delete" asp-route-id="@ViewData.Eval("id")" class="btn btn-default">Delete</a>
+}
