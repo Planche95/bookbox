@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using BookBox.ViewModels;
+using Microsoft.Extensions.Logging;
+using BookBox.Models;
 
 namespace BookBox.Controllers
 {
@@ -14,13 +16,15 @@ namespace BookBox.Controllers
         private readonly UserManager<IdentityUser> _userManager;
         private readonly SignInManager<IdentityUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ILogger _logger;
 
         public AccountController(UserManager<IdentityUser> userManager, SignInManager<IdentityUser> signInManager,
-                                 RoleManager<IdentityRole> roleManager)
+            RoleManager<IdentityRole> roleManager, ILogger<AccountController> logger)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _roleManager = roleManager;
+            _logger = logger;
         }
 
         public IActionResult Login()
@@ -38,12 +42,22 @@ namespace BookBox.Controllers
 
             if (user != null)
             {
+                _logger.LogInformation(LoggingEvents.GetItem,
+                        "User {USER} found", loginViewModel.UserName);
+
                 var result = await _signInManager.PasswordSignInAsync(user, loginViewModel.Password, false, false);
                 if (result.Succeeded)
                 {
+                    _logger.LogInformation(LoggingEvents.GetItem,
+                        "User {USER} logged in", loginViewModel.UserName);
+
                     return RedirectToAction("Index", "Home");
                 }
             }
+
+            _logger.LogWarning(LoggingEvents.GetItemNotFound,
+                        "Username {USER}/password not found",
+                        loginViewModel.UserName);
 
             ModelState.AddModelError("", "Username/password not found");
             return View(loginViewModel);
@@ -64,10 +78,16 @@ namespace BookBox.Controllers
 
                 if (result.Succeeded)
                 {
+                    _logger.LogInformation(LoggingEvents.InsertItem,
+                        "User {USER} created", loginViewModel.UserName);
+
                     IdentityResult roleResult = await _userManager.AddToRoleAsync(user, "User");
 
                     if (roleResult.Succeeded)
                     {
+                        _logger.LogInformation(LoggingEvents.InsertItem,
+                        "User {USER} assigned to User role", loginViewModel.UserName);
+
                         return RedirectToAction("Index", "Home");
                     }
                 }
@@ -75,9 +95,12 @@ namespace BookBox.Controllers
                 {
                     foreach (IdentityError error in result.Errors)
                     {
+                        _logger.LogWarning(LoggingEvents.CreateUpdateItemFailed,
+                        "Error while creating user {USER}: {ERROR}",
+                        loginViewModel.UserName, error.Description);
+
                         ModelState.AddModelError("", error.Description);
-                    }
-                    
+                    }   
                 }
 
             }
@@ -88,6 +111,9 @@ namespace BookBox.Controllers
         [Authorize]
         public async Task<IActionResult> Logout()
         {
+            _logger.LogInformation(LoggingEvents.Logout,
+                        "{USER} logout", User.Identity.Name);
+
             await _signInManager.SignOutAsync();
             return RedirectToAction("Index", "Home");
         }

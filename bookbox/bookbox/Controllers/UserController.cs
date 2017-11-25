@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using BookBox.ViewModels;
 using BookBox.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 
 namespace BookBox.Controllers
 {
@@ -16,15 +17,20 @@ namespace BookBox.Controllers
 
         private readonly IBookRepository _bookRepository;
         private readonly IRatingRepository _ratingRepository;
+        private readonly ILogger _logger;
 
-        public UserController(IBookRepository bookRepository, IRatingRepository ratingRepository)
+        public UserController(IBookRepository bookRepository, IRatingRepository ratingRepository,
+            ILogger<UserController> logger)
         {
             _bookRepository = bookRepository;
             _ratingRepository = ratingRepository;
+            _logger = logger;
         }
 
         public IActionResult Index()
         {
+            _logger.LogInformation(LoggingEvents.ListItems, "Getting all rated books by {USER}", User.Identity.Name);
+
             IEnumerable<Rating> ratings = _ratingRepository.GetRatingsByUserName(User.Identity.Name);
             List<BookRatingViewModel> bookModels = new List<BookRatingViewModel>();
 

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using BookBox.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Logging;
 
 namespace BookBox.Controllers
 {
@@ -16,17 +17,30 @@ namespace BookBox.Controllers
     {
         private readonly IBookRepository _bookRepository;
         private readonly IAuthorRepository _authorRepository;
+        private readonly ILogger _logger;
 
-        public BookController(IBookRepository bookRepository, IAuthorRepository authorRepository)
+        public BookController(IBookRepository bookRepository, IAuthorRepository authorRepository,
+            ILogger<BookController> logger)
         {
             _bookRepository = bookRepository;
             _authorRepository = authorRepository;
+            _logger = logger;
         }
 
         [AllowAnonymous]
         public IActionResult Details(int id)
         {
-            return View(_bookRepository.GetBookById(id));
+            Book book = _bookRepository.GetBookById(id);
+
+            if (book == null)
+            {
+                _logger.LogWarning(LoggingEvents.GetItemNotFound,
+                        "Book with id {ID} not found", id);
+
+                return new StatusCodeResult(404);
+            }
+
+            return View(book);
         }
 
         public IActionResult Create()
@@ -58,6 +72,14 @@ namespace BookBox.Controllers
         {
             Book book = _bookRepository.GetBookById(id);
 
+            if (book == null)
+            {
+                _logger.LogWarning(LoggingEvents.GetItemNotFound,
+                        "Book with id {ID} not found", id);
+
+                return new StatusCodeResult(404);
+            }
+
             return View("CreateEdit",
                 new BookCreateEditViewModel()
                 {
@@ -78,35 +100,53 @@ namespace BookBox.Controllers
         {
             int bookId;
 
-            if (model.BookId == 0)
+            try
             {
-                bookId = _bookRepository.CreateBook(
-                new Book()
+                if (model.BookId == 0)
                 {
-                    Title = model.Title,
-                    Description = model.Description,
-                    ISBN = model.ISBN,
-                    PicturePath = "/images/0747532699.jpg",
-                    ReleaseDate = model.ReleaseDate,
-                    AuthorId = model.AuthorId,
-                    AveragedRating = 0
-                });
+                    _logger.LogInformation(LoggingEvents.InsertItem,
+                        "Create Book with {BOOK}", model);
+
+                    bookId = _bookRepository.CreateBook(
+                    new Book()
+                    {
+                        Title = model.Title,
+                        Description = model.Description,
+                        ISBN = model.ISBN,
+                        PicturePath = "/images/0747532699.jpg",
+                        ReleaseDate = model.ReleaseDate,
+                        AuthorId = model.AuthorId,
+                        AveragedRating = 0
+                    });
+                }
+                else
+                {
+                    _logger.LogInformation(LoggingEvents.UpdateItem,
+                        "Edit Book {ID} with {BOOK}", model.BookId, model);
+
+                    bookId = model.BookId;
+                    _bookRepository.EditBook(
+                    new Book()
+                    {
+                        BookId = model.BookId,
+                        Title = model.Title,
+                        Description = model.Description,
+                        ISBN = model.ISBN,
+                        PicturePath = model.PicturePath,
+                        ReleaseDate = model.ReleaseDate,
+                        AuthorId = model.AuthorId,
+                        AveragedRating = model.AveragedRating
+                    });
+                }
             }
-            else
+            catch (Exception ex)
             {
-                bookId = model.BookId;
-                _bookRepository.EditBook(
-                new Book()
-                {
-                    BookId = model.BookId,
-                    Title = model.Title,
-                    Description = model.Description,
-                    ISBN = model.ISBN,
-                    PicturePath = model.PicturePath,
-                    ReleaseDate = model.ReleaseDate,
-                    AuthorId = model.AuthorId,
-                    AveragedRating = model.AveragedRating
-                });
+                _logger.LogWarning(LoggingEvents.CreateUpdateItemFailed, ex,
+                        "Create/Update Book failed");
+
+                ModelState.AddModelError("", "Something went wrong. Please try again");
+                model.Authors = GetAuthorsSelectList();
+                return View(model);
             }
 
             return RedirectToAction("Details", new { id = bookId });
@@ -114,13 +154,37 @@ namespace BookBox.Controllers
 
         public IActionResult Delete(int id)
         {
-            return View(_bookRepository.GetBookById(id));
+            Book book = _bookRepository.GetBookById(id);
+
+            if (book == null)
+            {
+                _logger.LogWarning(LoggingEvents.GetItemNotFound,
+                        "Book with id {ID} not found", id);
+
+                return new StatusCodeResult(404);
+            }
+
+            return View(book);
         }
 
         [HttpPost]
         public IActionResult Delete(Book book)
         {
-            _bookRepository.DeleteBook(book.BookId);
+            try
+            {
+                _logger.LogInformation(LoggingEvents.DeleteItem,
+                        "Delete Book {ID}", book.BookId);
+
+                _bookRepository.DeleteBook(book.BookId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogWarning(LoggingEvents.DeleteItemFailed, ex,
+                        "Delete Book failed");
+
+                ModelState.AddModelError("", "Something went wrong. Please try again");
+                return View(_bookRepository.GetBookById(book.BookId));
+            }
             return RedirectToAction("Index", "Search");
         }
     }

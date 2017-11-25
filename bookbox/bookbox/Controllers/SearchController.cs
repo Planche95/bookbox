@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using BookBox.Models;
 using BookBox.ViewModels;
+using Microsoft.Extensions.Logging;
 
 namespace BookBox.Controllers
 {
@@ -12,11 +13,14 @@ namespace BookBox.Controllers
     {
         private readonly IBookRepository _bookRepository;
         private readonly IRatingRepository _ratingRepository;
+        private readonly ILogger _logger;
 
-        public SearchController(IBookRepository bookRepository, IRatingRepository ratingRepository)
+        public SearchController(IBookRepository bookRepository, IRatingRepository ratingRepository,
+            ILogger<UserController> logger)
         {
             _bookRepository = bookRepository;
             _ratingRepository = ratingRepository;
+            _logger = logger;
         }
 
         public IActionResult Index(string filter)
@@ -26,10 +30,14 @@ namespace BookBox.Controllers
 
             if (string.IsNullOrEmpty(filter))
             {
+                _logger.LogInformation(LoggingEvents.ListItems, "Getting all books for {USER}", User.Identity.Name);
+
                 books = _bookRepository.Books;
             }
             else
             {
+                _logger.LogInformation(LoggingEvents.ListItems, "Getting all fitered books for {USER}", User.Identity.Name);
+
                 books = _bookRepository.Books
                     .Where(b => IsContainCaseInsensitive(b.Title, filter) ||
                                 IsContainCaseInsensitive(b.Author.Name, filter) ||

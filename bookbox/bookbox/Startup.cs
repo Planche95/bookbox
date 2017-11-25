@@ -63,6 +63,7 @@ namespace BookBox
 
             app.UseStaticFiles();
             app.UseAuthentication();
+            app.UseStatusCodePagesWithReExecute("/error/{0}");
 
             app.UseMvc(routes =>
             {

@@ -13,8 +13,14 @@
         type: "POST",
         dataType: "json",
         data: RatingJsonModel,
-        success: function () {
+        success: function (response) {
+            var notyf = new Notyf();
 
+            if (response != null && response.success) {
+                notyf.confirm(response.message);
+            } else {
+                notyf.alert(response.message);
+            }    
         }
     });
 });

@@ -1,0 +1,15 @@
+{
+  "name": "notyf",
+  "homepage": "https://github.com/caroso1222/notyf",
+  "version": "2.0.1",
+  "_release": "2.0.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v2.0.1",
+    "commit": "ac8373fdbc6bac0ecfa51bfa62e58c86c5c3d3bd"
+  },
+  "_source": "https://github.com/caroso1222/notyf.git",
+  "_target": "v2.0.1",
+  "_originalSource": "notyf",
+  "_direct": true
+}

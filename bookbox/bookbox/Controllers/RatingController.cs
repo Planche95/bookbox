@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using BookBox.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.Extensions.Logging;
 
 namespace BookBox.Controllers
 {
@@ -14,11 +15,14 @@ namespace BookBox.Controllers
     {
         private readonly IRatingRepository _ratingRepository;
         private readonly UserManager<IdentityUser> _userManager;
+        private readonly ILogger _logger;
 
-        public RatingController(IRatingRepository ratingRepository, UserManager<IdentityUser> userManager)
+        public RatingController(IRatingRepository ratingRepository, UserManager<IdentityUser> userManager,
+            ILogger<RatingController> logger)
         {
             _ratingRepository = ratingRepository;
             _userManager = userManager;
+            _logger = logger;
         }
 
         [HttpPost]
@@ -27,22 +31,40 @@ namespace BookBox.Controllers
             IdentityUser user = _userManager.GetUserAsync(HttpContext.User).Result;
             Rating rating = _ratingRepository.GetRatingByBookIdAndUserName(model.BookId, User.Identity.Name);
 
-            if (rating == null)
+            try
             {
-                _ratingRepository.CreateRating(new Rating()
+                if (rating == null)
                 {
-                    BookId = model.BookId,
-                    UserId = user.Id,
-                    Value = model.Rating
-                });
+                    _logger.LogInformation(LoggingEvents.InsertItem,
+                        "Create rating with value {VALUE} for book {BOOK} by user {USER}",
+                        model.Rating, model.BookId, User.Identity.Name);
+
+                    _ratingRepository.CreateRating(new Rating()
+                    {
+                        BookId = model.BookId,
+                        UserId = user.Id,
+                        Value = model.Rating
+                    });
+                }
+                else
+                {
+                    _logger.LogInformation(LoggingEvents.InsertItem,
+                        "Update rating {RATING} with value {VALUE} for book {BOOK} by user {USER}",
+                        rating.RatingId, model.Rating, model.BookId, User.Identity.Name);
+
+                    rating.Value = model.Rating;
+                    _ratingRepository.EditRating(rating);
+                }
             }
-            else
+            catch (Exception ex)
             {
-                rating.Value = model.Rating;
-                _ratingRepository.EditRating(rating);
+                _logger.LogWarning(LoggingEvents.CreateUpdateItemFailed, ex,
+                        "Create/Update rating failed");
+
+                return Json(new { success = false, message = "Something went wrong. Please try again" });
             }
 
-            return Json(new { });
+            return Json(new { success = true, message = "Rating Saved!"});
         }
     }
 }
