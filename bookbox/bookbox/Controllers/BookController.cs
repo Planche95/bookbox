@@ -48,6 +48,7 @@ namespace BookBox.Controllers
             return View("CreateEdit",
                 new BookCreateEditViewModel()
                 {
+                    ReleaseDate = DateTime.Now,
                     Authors = GetAuthorsSelectList()
                 });
         }

@@ -25,6 +25,11 @@ namespace BookBox.Controllers
             _logger = logger;
         }
 
+        public IActionResult Index()
+        {
+            return View(_authorRepository.Authors);
+        }
+
         [AllowAnonymous]
         public IActionResult Details(int id)
         {

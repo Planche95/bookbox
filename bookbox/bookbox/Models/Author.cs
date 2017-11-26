@@ -11,10 +11,12 @@ namespace BookBox.Models
         public int AuthorId { get; set; }
         
         [Required]
+        [StringLength(30, MinimumLength = 1)]
         public string Name { get; set; }
 
         [Required]
         [Display(Name = "Last name")]
+        [StringLength(30, MinimumLength = 1)]
         public string LastName { get; set; }
 
         public List<Book> Books { get; set; }

@@ -12,12 +12,15 @@ namespace BookBox.ViewModels
     {
         public int BookId { get; set; }
 
+        //The longest book title have 584 symbols
         [Required]
+        [StringLength(584, MinimumLength = 1)]
         public string Title { get; set; }
 
         [Required]
         [Display(Name = "Release Date")]
         [DataType(DataType.Date)]
+        [RegularExpression(@"\d{2}\.\d{2}\.\d{4}", ErrorMessage = "Invalid Date Format")]
         public DateTime ReleaseDate { get; set; }
 
         [Required]
@@ -29,6 +32,7 @@ namespace BookBox.ViewModels
         public string PicturePath { get; set; }
 
         [Required]
+        [StringLength(1000, MinimumLength = 200)]
         public string Description { get; set; }
 
         [Required]
