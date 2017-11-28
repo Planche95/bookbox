@@ -20,7 +20,6 @@ namespace BookBox.ViewModels
         [Required]
         [Display(Name = "Release Date")]
         [DataType(DataType.Date)]
-        [RegularExpression(@"\d{2}\.\d{2}\.\d{4}", ErrorMessage = "Invalid Date Format")]
         public DateTime ReleaseDate { get; set; }
 
         [Required]

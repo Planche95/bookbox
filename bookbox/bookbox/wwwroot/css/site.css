@@ -63,6 +63,11 @@ display: inline-block;
     height: 300px;
 }
 
+/*Hide default Google Chrome datapicker*/
+input::-webkit-calendar-picker-indicator {
+    display: none;
+}
+
 /* Hide/rearrange for smaller screens */
 @media screen and (max-width: 767px) {
     /* Hide captions */

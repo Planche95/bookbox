@@ -27,9 +27,12 @@ namespace BookBox.Controllers
             _logger = logger;
         }
 
-        public IActionResult Login()
+        public IActionResult Login(string returnUrl)
         {
-            return View(new LoginViewModel());
+            return View(new LoginViewModel
+            {
+                ReturnUrl = returnUrl
+            });
         }
 
         [HttpPost]
@@ -51,7 +54,10 @@ namespace BookBox.Controllers
                     _logger.LogInformation(LoggingEvents.GetItem,
                         "User {USER} logged in", loginViewModel.UserName);
 
-                    return RedirectToAction("Index", "Home");
+                    if (string.IsNullOrEmpty(loginViewModel.ReturnUrl))
+                        return RedirectToAction("Index", "Home");
+
+                    return Redirect(loginViewModel.ReturnUrl);
                 }
             }
 

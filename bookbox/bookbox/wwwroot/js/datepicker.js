@@ -1,15 +1,14 @@
 ﻿$(document).ready(function () {
     var options = $.extend({},
         $.datepicker.regional[""], {
-            dateFormat: "dd.mm.yy"
+            dateFormat: "yy-mm-dd"
         }
     );
 
     $('.datepicker').datepicker(options);
 });
 
-//Double focus to validate after date change
+//To validate after pick from jQuery datapicker
 $(":input.datepicker").change(function () {
-    $(this).focusin();
     $(this).focusout();
 });
