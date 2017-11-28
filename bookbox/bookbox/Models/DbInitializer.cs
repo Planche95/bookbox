@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,9 @@ namespace BookBox.Models
     {
         public static async Task SeedAsync(AppDbContext context, UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
         {
+
+            context.Database.Migrate();
+
             if (!roleManager.Roles.Any())
             {
                 await roleManager.CreateAsync(new IdentityRole("User"));
