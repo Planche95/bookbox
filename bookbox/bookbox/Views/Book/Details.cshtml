@@ -9,7 +9,7 @@
 <div class="thumbnail">
     <img alt="" src="@Model.PicturePath">
     <div class="caption-full">
-        <h4 class="pull-right">Release Date: @Model.ReleaseDate.ToShortDateString()</h4>
+        <h4 class="pull-right">Release Date: @Model.ReleaseDate.ToString("dd/MM/yyyy")</h4>
         <h3>@Model.Title</h3>
         <h4>
             <a asp-controller="Author" asp-action="Details"
