@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
-namespace BookBox.Models
+﻿namespace BookBox.Models
 {
     public class RatingJsonModel
     {
